@@ -20,6 +20,11 @@ from utils.tts_client import (
     synthesize_text_mock,
     validate_cosyvoice_config,
 )
+from utils.f5_tts_client import (
+    load_f5tts_config_from_env,
+    synthesize_text_f5tts,
+    validate_f5tts_config,
+)
 
 SUPPORTED_AUDIO_EXTENSIONS = [".wav", ".mp3", ".m4a", ".aac", ".flac", ".ogg"]
 _FFMPEG_PROBED = False
@@ -27,9 +32,9 @@ _FFMPEG_BIN: Optional[str] = None
 
 
 def _read_audio_source_mode() -> str:
-    """Read audio source mode from env. Supported: mock | cosyvoice | local_voice."""
+    """Read audio source mode from env. Supported: mock | cosyvoice | f5tts | local_voice."""
     mode = (os.getenv("AUDIO_SOURCE_MODE") or "mock").strip().lower()
-    if mode not in {"mock", "cosyvoice", "local_voice"}:
+    if mode not in {"mock", "cosyvoice", "f5tts", "local_voice"}:
         return "mock"
     return mode
 
@@ -403,10 +408,16 @@ def _generate_persona_voiceovers(
     state: Optional[VideoGenerationState] = None,
 ) -> Dict[str, Any]:
     project_dir = state.get("project_dir") if state else None
+
+    # Load config based on mode
     base_cosy_config = None
+    base_f5tts_config = None
     if mode == "cosyvoice":
         base_cosy_config = load_cosyvoice_config_from_env()
         validate_cosyvoice_config(base_cosy_config, project_dir)
+    elif mode == "f5tts":
+        base_f5tts_config = load_f5tts_config_from_env()
+        validate_f5tts_config(base_f5tts_config, project_dir)
 
     audio_paths: List[str] = []
     audio_durations: List[float] = []
@@ -438,6 +449,17 @@ def _generate_persona_voiceovers(
                     )
                 )
                 used_mode = persona_config.mode
+            elif mode == "f5tts":
+                # F5-TTS uses single reference audio for all segments
+                duration = asyncio.run(
+                    synthesize_text_f5tts(
+                        text=text,
+                        output_path=str(segment_file),
+                        config=base_f5tts_config,
+                        project_dir=project_dir,
+                    )
+                )
+                used_mode = "f5tts"
             else:
                 duration = asyncio.run(synthesize_text_mock(text, str(segment_file)))
                 used_mode = "mock"
@@ -455,7 +477,13 @@ def _generate_persona_voiceovers(
             pause_ms = _as_int(segment.get("pause_ms"), 0)
             if pause_ms > 0 and j < len(segments) - 1:
                 silence_file = output_dir / f"voice_{i:03d}_silence_{j:03d}.wav"
-                sr = int(base_cosy_config.sample_rate) if base_cosy_config is not None else 22050
+                # Determine sample rate based on mode
+                if mode == "f5tts" and base_f5tts_config is not None:
+                    sr = int(base_f5tts_config.sample_rate)
+                elif base_cosy_config is not None:
+                    sr = int(base_cosy_config.sample_rate)
+                else:
+                    sr = 22050
                 _create_silence_wav(silence_file, pause_ms, sr)
                 temp_files.append(silence_file)
 

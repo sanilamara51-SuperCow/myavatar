@@ -14,3 +14,4 @@ numpy>=1.26.0
 crewai>=0.102.0
 pyscenedetect[opencv]>=0.6.3
 scikit-learn>=1.4.0
+scipy>=1.11.0

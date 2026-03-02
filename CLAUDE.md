@@ -57,6 +57,7 @@ Three graph implementations share the same state schema:
 - **Playwright**: Headless browser capture for web screenshots
 - **Marp (marp-cli)**: Markdown→PNG slide rendering
 - **CosyVoice**: Local TTS service (FastAPI-based)
+- **F5-TTS**: Advanced voice cloning (recommended for quality)
 - **FFmpeg + OpenCV**: Video assembly pipeline
 - **PySceneDetect + scikit-learn**: Video keyframe extraction
 - **PySide6**: Desktop GUI framework
@@ -152,6 +153,12 @@ COSYVOICE_API_STYLE=official_fastapi
 COSYVOICE_MODE=sft
 COSYVOICE_VOICE=<speaker_id>
 
+# F5-TTS (Advanced voice cloning - recommended for RTX 3080Ti)
+AUDIO_SOURCE_MODE=f5tts
+F5TTS_API_URL=http://127.0.0.1:7865
+F5TTS_REF_AUDIO_PATH=workspace/voice_ref/my_voice.wav
+F5TTS_REF_TEXT=这是参考文本
+
 # Local voice files (user-recorded)
 AUDIO_SOURCE_MODE=local_voice
 VOICE_INPUT_DIR=workspace/voice_input
@@ -165,6 +172,19 @@ powershell -ExecutionPolicy Bypass -File scripts\start_cosyvoice_fastapi.ps1 `
   -CosyVoiceRepoDir C:\docker\CosyVoice `
   -ImageName cosyvoice:v1.0 `
   -HostPort 50000
+```
+
+### F5-TTS Local Deployment (Recommended)
+
+```powershell
+# Clone F5-TTS repository first
+git clone https://github.com/SWivid/F5-TTS.git C:\docker\F5-TTS
+
+# Build and start F5-TTS FastAPI (see docs/f5_tts_guide.md)
+powershell -ExecutionPolicy Bypass -File scripts\start_f5tts_fastapi.ps1 `
+  -F5TTSRepoDir C:\docker\F5-TTS `
+  -ImageName f5tts:v1.0 `
+  -HostPort 7865
 ```
 
 ## Windows-Specific Commands
@@ -240,6 +260,7 @@ Myavatar/
 └── docs/
     ├── arch.md                    # Architecture design (Chinese)
     ├── cosyvoice_local_deploy.md  # CosyVoice Docker deployment
+    ├── f5_tts_guide.md            # F5-TTS voice cloning guide
     ├── provider_registry.md       # Provider registry documentation
     ├── persona_mixing_and_pacing.md
     └── ...
