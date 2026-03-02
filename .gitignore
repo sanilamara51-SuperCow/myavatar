@@ -1,0 +1,76 @@
+# Environment variables
+.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+cosy_logs*.txt
+error*.log
+run*.log
+hybrid_error.log
+hybrid_test.log
+standalone_error.log
+ffmpeg_test_err*.log
+error_trace*.log
+debug_vision.txt
+out.txt
+
+# Test files
+test_*.py
+*_test.py
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+nul
+
+# Application specific
+workspace/
+cosy_server.py
+cosy_server_utf8.py
+cosyvoice.py
+cosyvoice_cli.py
+cosyvoice_model.py
+frontend_cli.py
+test_api.py
+test_api2.py
+test_api3.py
+test_audio.py
+test_ppt_api.py
+test_vision_standalone.py
