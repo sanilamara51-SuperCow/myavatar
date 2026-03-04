@@ -1,6 +1,38 @@
 # Myavatar
 
+> **中文文档**: `.claude/skills/myavatar/SKILL.md`
+> **开发日志**: `docs/dev_log_20260304.md`
+
 Myavatar is a Python-based `video-as-code` pipeline for generating short knowledge videos from structured script + slide + voice workflows.
+
+## 快速开始 (Quick Start)
+
+### 安装
+```powershell
+pip install -r requirements.txt
+```
+
+### CLI 方式运行
+```powershell
+# 标准流程 (文本驱动)
+python src/main.py --project demo_project --template-id tech_burst
+
+# 抖音视频理解流程
+python src/main.py --douyin-url "https://v.douyin.com/xxx/"
+
+# 自定义内容
+python src/main.py ^
+  --project demo_project ^
+  --topic "你的自定义选题" ^
+  --duration-mins 2.0 ^
+  --target-audience "目标受众" ^
+  --template-id data_focus
+```
+
+### 桌面应用
+```powershell
+python src/desktop_app.py
+```
 
 ## Current Capabilities
 - Hybrid script generation with optional image understanding.

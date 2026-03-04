@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+**开发日志**: `docs/dev_log_20260304.md` - 2026-03-04 Skill 与项目代码对齐完整记录
+
+**中文 Skill 文档**: `.claude/skills/myavatar/SKILL.md` - 完整的中文使用指南
+
 ## Project Overview
 
 Myavatar is an AI-powered video generation pipeline that creates "talking head + slides" style videos for platforms like Douyin (TikTok). It uses a multi-agent architecture orchestrated by LangGraph to transform text topics into complete videos with synchronized audio and visual assets.
